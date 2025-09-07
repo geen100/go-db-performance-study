@@ -2,6 +2,7 @@ package models
 
 import (
     "time"
+	"github.com/go-playground/validator/v10"
 )
 
 // BaseModel 全モデル共通のフィールド
