@@ -1,0 +1,38 @@
+development:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+  name: blog_benchmark
+  charset: utf8mb4
+  parse_time: true
+  loc: Local
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: 3600
+
+testing:
+  host: localhost
+  port: 3307
+  user: test_user
+  password: test_password
+  name: blog_benchmark_test
+  charset: utf8mb4
+  parse_time: true
+  loc: Local
+  max_idle_conns: 5
+  max_open_conns: 50
+  conn_max_lifetime: 1800
+
+production:
+  host: localhost
+  port: 3306
+  user: root
+  password: password
+  name: blog_benchmark
+  charset: utf8mb4
+  parse_time: true
+  loc: Local
+  max_idle_conns: 20
+  max_open_conns: 200
+  conn_max_lifetime: 3600

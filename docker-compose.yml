@@ -1,0 +1,125 @@
+version: '3.8'
+
+services:
+  # メイン MySQL データベース
+  mysql:
+    image: mysql:8.0
+    container_name: go-db-performance-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: blog_benchmark
+      MYSQL_USER: app_user
+      MYSQL_PASSWORD: app_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./scripts/sql/init_database.sql:/docker-entrypoint-initdb.d/init.sql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=1G
+      --innodb-log-file-size=256M
+      --innodb-flush-log-at-trx-commit=2
+      --innodb-flush-method=O_DIRECT
+      --slow-query-log=1
+      --slow-query-log-file=/var/log/mysql/slow.log
+      --long-query-time=2
+    networks:
+      - db-performance-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ppassword"]
+      timeout: 20s
+      retries: 10
+
+  # テスト用 MySQL データベース
+  mysql-test:
+    image: mysql:8.0
+    container_name: go-db-performance-mysql-test
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: test_password
+      MYSQL_DATABASE: blog_benchmark_test
+      MYSQL_USER: test_user
+      MYSQL_PASSWORD: test_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --innodb-buffer-pool-size=512M
+    networks:
+      - db-performance-net
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptest_password"]
+      timeout: 20s
+      retries: 10
+
+  # phpMyAdmin (開発用 UI)
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: go-db-performance-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+      PMA_USER: root
+      PMA_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+    networks:
+      - db-performance-net
+    profiles:
+      - dev
+
+  # Redis (キャッシュ用)
+  redis:
+    image: redis:7-alpine
+    container_name: go-db-performance-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - db-performance-net
+    profiles:
+      - cache
+
+  # Grafana (監視用)
+  grafana:
+    image: grafana/grafana:latest
+    container_name: go-db-performance-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - db-performance-net
+    profiles:
+      - monitoring
+
+# 永続化ボリューム
+volumes:
+  mysql_data:
+    driver: local
+  mysql_test_data:
+    driver: local
+  redis_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# ネットワーク
+networks:
+  db-performance-net:
+    driver: bridge
