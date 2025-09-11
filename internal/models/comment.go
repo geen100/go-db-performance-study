@@ -34,10 +34,10 @@ type Comment struct {
     UpdatedAt time.Time     `gorm:"autoUpdateTime" json:"updated_at"`
 
     // リレーション
-    Post    Post      `gorm:"foreignKey:PostID;constraint:OnDelete:CASCADE" json:"post,omitempty"`
-    User    User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user,omitempty"`
-    Parent  *Comment  `gorm:"foreignKey:ParentID" json:"parent,omitempty"`
-    Replies []Comment `gorm:"foreignKey:ParentID" json:"replies,omitempty"`
+    Post    Post      `gorm:"foreignKey:PostID;constraint:OnDelete:CASCADE" json:"post,omitempty" validate:"-"`
+    User    User      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"user,omitempty" validate:"-"`
+    Parent  *Comment  `gorm:"foreignKey:ParentID" json:"parent,omitempty" validate:"-"`
+    Replies []Comment `gorm:"foreignKey:ParentID" json:"replies,omitempty" validate:"-"`
 }
 
 // TableName テーブル名を明示的に指定

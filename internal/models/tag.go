@@ -22,7 +22,7 @@ type Tag struct {
     UpdatedAt time.Time `gorm:"autoUpdateTime" json:"updated_at"`
 
     // リレーション
-    Posts []Post `gorm:"many2many:post_tags;constraint:OnDelete:CASCADE" json:"posts,omitempty"`
+    Posts []Post `gorm:"many2many:post_tags;constraint:OnDelete:CASCADE" json:"posts,omitempty" validate:"-"`
 }
 
 // TableName テーブル名を明示的に指定

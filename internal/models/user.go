@@ -20,8 +20,8 @@ type User struct {
 	UpdatedAt       time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 
 	// リレーション（パフォーマンス最適化）
-	Posts    []Post    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"posts,omitempty"`
-	Comments []Comment `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"comments,omitempty"`
+	Posts    []Post    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"posts,omitempty" validate:"-"`
+	Comments []Comment `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE" json:"comments,omitempty" validate:"-"`
 }
 
 // TableName テーブル名を明示的に指定

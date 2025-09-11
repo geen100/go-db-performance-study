@@ -88,7 +88,7 @@ func createTestPost(db *gorm.DB) error {
 		Body:   "これはGORM性能テスト用の最初の投稿です。\nデータベース操作が正常に動作しているかを確認します。",
 	}
 
-	if err := db.Create(post).Error; err != nil {
+	if err := db.FirstOrCreate(post).Error; err != nil {
 		return err
 	}
 
