@@ -1,4 +1,3 @@
-// internal/config/config.go (修正版 - 命名競合解決)
 package config
 
 import (
@@ -22,7 +21,7 @@ type DatabaseConfig struct {
 	Loc                    string `yaml:"loc"`
 	MaxIdleConns           int    `yaml:"max_idle_conns"`
 	MaxOpenConns           int    `yaml:"max_open_conns"`
-	ConnMaxLifetimeSeconds int    `yaml:"conn_max_lifetime"` // ← フィールド名を変更
+	ConnMaxLifetimeSeconds int    `yaml:"conn_max_lifetime"`
 }
 
 // Config アプリケーション全体の設定

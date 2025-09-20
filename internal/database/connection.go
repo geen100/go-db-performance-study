@@ -11,7 +11,7 @@ import (
     "gorm.io/gorm/logger"
 )
 
-// DB データベース接続のグローバル変数
+
 var DB *gorm.DB
 
 // Connect データベースに接続
